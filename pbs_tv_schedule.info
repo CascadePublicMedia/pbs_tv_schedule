@@ -1,0 +1,6 @@
+name = PBS TV Schedule
+description = Display schedule information from the PBS TV Schedule API.
+core = 7.x
+package = PBS
+
+configure = admin/config/media/pbs-tv-schedule

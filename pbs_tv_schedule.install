@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the PBS TV Schedule module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function pbs_tv_schedule_schema() {
+  $schema = array();
+
+  $schema['pbs_tv_schedule_program'] = array(
+    'description' => 'Cache of static programs list from the TVSS API.',
+    'fields' => array(
+      'cid' => array(
+        'description' => 'TVSS entry ID.',
+        'type' => 'char',
+        'length' => '36',
+        'not null' => TRUE,
+      ),
+      'program_id' => array(
+        'description' => 'TVSS program ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'Program title.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'description' => array(
+        'description' => 'Program description.',
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'external_id' => array(
+        'description' => 'TVVS external ID.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'rovi' => array(
+        'description' => 'TVSS ROVI ID (deprecated).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('cid'),
+    'unique keys' => array(
+      'program_id' => array('program_id'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function pbs_tv_schedule_install() {
+  // Get a full list of program from the TVSS API (does not require auth).
+  _pbs_tv_schedule_programs_update();
+}

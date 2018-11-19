@@ -1,0 +1,221 @@
+.pbs-tv-schedule-schedule-date .schedule-items-past summary {
+  margin: 10px 0;
+  display: list-item;
+  cursor: pointer;
+}
+
+/* Expand the first item in the future items group. */
+.pbs-tv-schedule-schedule-date .schedule-items-future div:first-of-type .schedule-item-details {
+  display: block;
+}
+
+.pbs-tv-schedule-schedule-date .pbs-tv-schedule-schedule-search-header {
+  margin-top: 30px;
+  font-size: 1.75em;
+  font-weight: bold;
+}
+
+.pbs-tv-schedule-schedule-date .pbs-tv-schedule-schedule-date-item {
+  border: 2px solid #000;
+  padding: 5px;
+  margin: 10px 0;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-header {
+  cursor: pointer;
+  font-size: 1.5em;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-start-time {
+  float: left;
+  display: inline-block;
+  font-weight: bold;
+  width: 15%;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-title {
+  display: inline-block;
+  width: 85%;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-details {
+  display: none;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-metadata {
+  width: 15%;
+  float: left;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-description {
+  margin-left: 15%;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-subtitle {
+  font-size: 1.25em;
+  color: #666;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-duration {
+  color: #666;
+}
+
+.pbs-tv-schedule-schedule-date-item .schedule-item-icons img,
+.pbs-tv-schedule-schedule-week-container .schedule-item-details-container .schedule-item-icons img {
+  display: inline-block;
+}
+
+.pbs-tv-schedule-schedule-week-container {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  background-color: #666;
+  position: relative;
+}
+
+.pbs-tv-schedule-schedule-week-container::-webkit-scrollbar {
+  background-color: #ddd;
+  height: 30px;
+}
+
+.pbs-tv-schedule-schedule-week-container::-webkit-scrollbar-thumb {
+  background-color: #666;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-title {
+  text-align: center;
+  font-size: 2em;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-link-previous,
+.pbs-tv-schedule-schedule-week .schedule-link-next {
+  display: inline-block;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-link-previous a:hover,
+.pbs-tv-schedule-schedule-week .schedule-link-next a:hover,
+.pbs-tv-schedule-schedule-week .schedule-link-previous a:active,
+.pbs-tv-schedule-schedule-week .schedule-link-next a:active {
+  text-decoration: none;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-link-previous a:before {
+  content: '\2329';
+  font-weight: bold;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-link-next a:before {
+  content: '\232a';
+  font-weight: bold;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-row {
+  display: flex;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-row-header {
+  padding: 15px;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-row-header-day {
+  display: block;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-row-header-date {
+  display: block;
+  font-size: 0.8em;
+  font-weight: normal;
+  color: #ddd;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-cell {
+  flex: 0 0 30%;
+  box-sizing: border-box;
+  border: 1px solid #666;
+  height: 75px;
+  background-color: #fff;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-column-header {
+  height: 50px;
+  line-height: 50px;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-cell:first-of-type {
+  flex-basis: 10%;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-column-header,
+.pbs-tv-schedule-schedule-week .schedule-row-header {
+  font-weight: bold;
+  background: #333;
+  color: #fff;
+  text-align: center;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item {
+  cursor: pointer;
+  padding: 5px 0 0 5px;
+  overflow-x: hidden;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item-title {
+  font-size: 1.15em;
+  line-height: 1.1em;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item-duration {
+  font-size: 0.75em;
+  color: #999;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item-subtitle {
+  font-weight: bold;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item-details-container {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+@media only screen and (max-height: 600px) {
+  /* Use the entire screen on smaller devices. */
+  .pbs-tv-schedule-schedule-week .schedule-item-details-container {
+    position: fixed;
+  }
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item-details-contents {
+  position: relative;
+  top: 50%;
+  left: 25%;
+  transform: translateY(-50%);
+  background: #fff;
+  width: 50%;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.5);
+  z-index: 101;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item-details {
+  display: none;
+}
+
+.pbs-tv-schedule-schedule-week .schedule-item-details .schedule-item-description {
+  padding: 5px 0;
+}
+
+.pbs-tv-schedule-schedule-no-results {
+  padding: 50px;
+  margin: 20px 0;
+  background-color: #ddd;
+  border: 1px solid #999;
+  text-align: center;
+  font-size: 2em;
+}
