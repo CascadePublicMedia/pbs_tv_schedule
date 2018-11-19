@@ -3,4 +3,6 @@ description = Display schedule information from the PBS TV Schedule API.
 core = 7.x
 package = PBS
 
+files[] = pbs_tv_schedule.test
+
 configure = admin/config/media/pbs-tv-schedule

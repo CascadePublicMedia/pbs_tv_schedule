@@ -1,0 +1,100 @@
+<?php
+
+/**
+ * @file
+ * Tests for the PBS TV Schedule module.
+ */
+
+/**
+ * Functional tests.
+ *
+ * TODO: Add mock API to test other functionality.
+ *
+ * @see DrupalWebTestCase
+ *
+ * @ingroup pbs_tv_schedule
+ */
+class PbsTvScheduleWebTestCase extends DrupalWebTestCase {
+
+  /**
+   * A privileged Drupal user.
+   *
+   * @var object
+   */
+  protected $adminUser;
+
+  /**
+   * Test information.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'PBS TV Schedule Functional Tests',
+      'description' => 'Test basic PBS TV Schedule module functionality.',
+      'group' => 'PBS TV Schedule',
+    );
+  }
+
+  /**
+   * Set up the test environment.
+   *
+   * @see DrupalWebTestCase::setUp()
+   */
+  public function setUp() {
+    parent::setUp(array(
+      'pbs_tv_schedule',
+    ));
+
+    // Create a privileged user.
+    $this->adminUser = $this->drupalCreateUser(array(
+      'access content',
+      'administer pbs tv schedule',
+    ));
+  }
+
+  /**
+   * Verify existence of default paths.
+   */
+  public function testDefaultPaths() {
+    $paths = array(
+      '/pbs-tv-schedule/schedule',
+      '/pbs-tv-schedule/schedule/week',
+    );
+
+    foreach ($paths as $path) {
+      $this->drupalGet($path);
+      $this->assertResponse(200);
+    }
+  }
+
+  /**
+   * Test administrative functions.
+   */
+  public function testModuleAdministration() {
+    $path = '/admin/config/system/pbs-tv-schedule';
+
+    // Anonymous user should not have access.
+    $this->drupalGet($path);
+    $this->assertResponse(403);
+
+    // Admin user should have access.
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet($path);
+    $this->assertResponse(200);
+
+    // Assert defaults.
+    $this->assertFieldById('edit-pbs-tv-schedule-call-sign', '');
+    $this->assertFieldById('edit-pbs-tv-schedule-api-key', '');
+
+    // Update settings.
+    $edit = array(
+      'pbs_tv_schedule_call_sign' => 'abcd',
+      'pbs_tv_schedule_api_key' => '00000000-0000-0000-0000-000000000000',
+    );
+    $this->drupalPost($path, $edit, t('Save configuration'));
+
+    // Assert updated settings.
+    $this->assertFieldById('edit-pbs-tv-schedule-call-sign', 'abcd');
+    $this->assertFieldById('edit-pbs-tv-schedule-api-key', '00000000-0000-0000-0000-000000000000');
+  }
+
+}
