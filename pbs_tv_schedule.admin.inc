@@ -14,7 +14,7 @@
  *
  * @see system_settings_form()
  */
-function pbs_tv_schedule_settings($form, &$form_state) {
+function pbs_tv_schedule_settings(array $form, array &$form_state) {
   $form['#attached']['css'][] = drupal_get_path('module', 'pbs_tv_schedule')
     . '/css/pbs_tv_schedule.admin.css';
 
@@ -75,7 +75,7 @@ function pbs_tv_schedule_settings($form, &$form_state) {
         '#type' => 'markup',
         '#markup' => t('<label for="@for">@label</label>', array(
           '@for' => 'edit-pbs-tv-schedule-feeds-config-tabledrag',
-          '@label' => t('Feeds Configuration')
+          '@label' => t('Feeds Configuration'),
         )),
         '#weight' => 60,
         '#prefix' => '<div class="form-item">',
@@ -148,7 +148,7 @@ function pbs_tv_schedule_settings($form, &$form_state) {
   $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save configuration')
+    '#value' => t('Save configuration'),
   );
 
   return $form;
@@ -157,14 +157,12 @@ function pbs_tv_schedule_settings($form, &$form_state) {
 /**
  * Validation handler for the pbs_tv_schedule_settings() form.
  *
- * @param $form
- * @param $form_state
- *
  * @see pbs_tv_schedule_settings()
  * @see pbs_tv_schedule_settings_submit()
  */
-function pbs_tv_schedule_settings_validate($form, &$form_state) {
-  if ($feed_default = $form_state['values']['pbs_tv_schedule_feed_default']) {
+function pbs_tv_schedule_settings_validate(array $form, array &$form_state) {
+  if (isset($form_state['values']['pbs_tv_schedule_feed_default'])) {
+    $feed_default = $form_state['values']['pbs_tv_schedule_feed_default'];
     $config = $form_state['values']['pbs_tv_schedule_feeds_config'];
     if (!$config[$feed_default]['enabled']) {
       form_set_error(
@@ -179,53 +177,57 @@ function pbs_tv_schedule_settings_validate($form, &$form_state) {
 /**
  * Submission handler for the pbs_tv_schedule_settings() form.
  *
- * @param $form
- * @param $form_state
- *
  * @see pbs_tv_schedule_settings()
  * @see pbs_tv_schedule_settings_validate()
  * @see system_settings_form_submit()
  */
-function pbs_tv_schedule_settings_submit($form, &$form_state) {
+function pbs_tv_schedule_settings_submit(array $form, array &$form_state) {
   system_settings_form_submit($form, $form_state);
 }
 
 /**
  * Create table drag element for feed ordering.
  *
- * @param $variables
+ * @param array $variables
+ *   Theme variables.
+ *
  * @return string
+ *   Form output.
+ *
  * @throws Exception
  */
-function theme_pbs_tv_schedule_settings($variables) {
+function theme_pbs_tv_schedule_settings(array $variables) {
   $form = $variables['form'];
-  $rows = array();
 
-  foreach (element_children($form['pbs_tv_schedule_feeds_config']) as $id) {
-    $rows[] = array(
-      'data' => array(
-        drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['name']),
-        drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['enabled']),
-        drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['default']),
-        drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['weight']),
-      ),
-      'class' => array('draggable'),
+  if (isset($form['pbs_tv_schedule_feeds_config'])) {
+    $rows = array();
+
+    foreach (element_children($form['pbs_tv_schedule_feeds_config']) as $id) {
+      $rows[] = array(
+        'data' => array(
+          drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['name']),
+          drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['enabled']),
+          drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['default']),
+          drupal_render($form['pbs_tv_schedule_feeds_config'][$id]['weight']),
+        ),
+        'class' => array('draggable'),
+      );
+    }
+
+    $markup = theme('table', array(
+      'header' => array(t('Name'), t('Enabled'), t('Default'), t('Weight')),
+      'rows' => $rows,
+      'attributes' => array('id' => 'pbs-tv-schedule-feeds-config-tabledrag'),
+    ));
+    $form['pbs_tv_schedule_feeds_config_tabledrag']['#markup'] .= $markup;
+
+    drupal_add_tabledrag(
+      'pbs-tv-schedule-feeds-config-tabledrag',
+      'order',
+      'sibling',
+      'pbs-tv-schedule-feed-weight'
     );
   }
-
-  $markup = theme('table', array(
-    'header' => array(t('Name'), t('Enabled'), t('Default'), t('Weight')),
-    'rows' => $rows,
-    'attributes' => array('id' => 'pbs-tv-schedule-feeds-config-tabledrag'),
-  ));
-  $form['pbs_tv_schedule_feeds_config_tabledrag']['#markup'] .= $markup;
-
-  drupal_add_tabledrag(
-    'pbs-tv-schedule-feeds-config-tabledrag',
-    'order',
-    'sibling',
-    'pbs-tv-schedule-feed-weight'
-  );
 
   return drupal_render_children($form);
 }
