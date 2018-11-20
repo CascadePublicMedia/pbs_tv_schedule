@@ -63,11 +63,12 @@ Module configure is found in `Configuration » System » PBS TV Schedule`:
   
    Secret API key as provided by PBS. See **REQUIREMENTS** for more information.
    
- * `Default Feed`
+ * `Feeds Configuration`
   
-   This option will be available after a valid Station Call Sign and API Key 
-   have been provided. The selected default feed will appear first when a user
-   accesses the schedule pages.
+   These options will be available after a valid Station Call Sign and API Key 
+   have been provided. Feeds can be sorted and enabled/disabled, and one feed 
+   can be set as the default. These settings will apply to feeds select lists
+   presented to the user on schedule pages.
 
 TEMPLATES
 ---------

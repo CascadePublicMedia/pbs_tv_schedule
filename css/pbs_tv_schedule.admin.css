@@ -1,0 +1,4 @@
+/* Style errors in the Feeds Configuration tabledrag element. */
+.form-item .form-checkbox.error {
+  border: 2px solid red;
+}

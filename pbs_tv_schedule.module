@@ -167,6 +167,9 @@ function pbs_tv_schedule_theme() {
       'file' => 'theme.inc',
       'path' => $path,
     ),
+    'pbs_tv_schedule_settings' => array(
+      'render element' => 'form',
+    ),
   );
 }
 
@@ -264,15 +267,7 @@ function pbs_tv_schedule_schedule($form, &$form_state) {
   );
   $form_state['storage']['client'] = $client;
 
-  $feeds = array();
-  try {
-    $feeds = $client->getFeeds();
-  }
-  catch (PbsTvScheduleClientException $e) {
-    watchdog_exception('pbs_tv_schedule', $e);
-  }
-
-  $form['channel'] = _pbs_tv_schedule_channel_filter($feeds);
+  $form['channel'] = _pbs_tv_schedule_channel_filter();
   if (isset($form_state['values']['channel'])) {
     $form['channel']['#default_value'] = $form_state['values']['channel'];
   }
@@ -491,17 +486,26 @@ function pbs_tv_schedule_schedule_results(array $form, PbsTvScheduleClient $clie
 /**
  * Channel filter select element.
  *
- * @param array $feeds
- *   Feeds data from the TVSS API.
+ * Accounts for module configuration with default overridable by by a URL
+ * parameter.
  *
  * @return array
  *   Select form element with channel options.
+ *
+ * @see pbs_tv_schedule_settings()
  */
-function _pbs_tv_schedule_channel_filter(array $feeds) {
+function _pbs_tv_schedule_channel_filter() {
+  $feeds = pbs_tv_schedule_get_feeds();
+  uasort($feeds, 'drupal_sort_weight');
   $feed_options = array();
+
   foreach ($feeds as $feed) {
+    if (isset($feed['enabled']) && !$feed['enabled']) {
+      continue;
+    }
     $feed_options[$feed['short_name']] = $feed['full_name'];
   }
+
   $feed_default = variable_get(
     'pbs_tv_schedule_feed_default',
     key($feed_options)
@@ -509,12 +513,42 @@ function _pbs_tv_schedule_channel_filter(array $feeds) {
   if (isset($_GET['channel'])) {
     $feed_default = $_GET['channel'];
   }
+
   return array(
     '#type' => 'select',
-    '#title' => 'Channel',
+    '#title' => t('Channel'),
     '#options' => $feed_options,
     '#default_value' => $feed_default,
   );
+}
+
+/**
+ * Gets an array of feeds with config data merged in, if available.
+ *
+ * @return array
+ *   Feed information and configuration keyed by feed short name.
+ *
+ * @see pbs_tv_schedule_settings()
+ */
+function pbs_tv_schedule_get_feeds() {
+  /* @var PbsTvScheduleClient $client */
+  $client = pbs_tv_schedule_get_api_client(
+    variable_get('pbs_tv_schedule_api_key'),
+    variable_get('pbs_tv_schedule_call_sign')
+  );
+
+  $feeds = array();
+  try {
+    $feeds = $client->getFeeds();
+    if ($feeds_config = variable_get('pbs_tv_schedule_feeds_config')) {
+      $feeds = array_merge_recursive($feeds, $feeds_config);
+    }
+  }
+  catch (PbsTvScheduleClientException $e) {
+    watchdog_exception('pbs_tv_schedule', $e);
+  }
+
+  return $feeds;
 }
 
 /**
@@ -909,15 +943,7 @@ function pbs_tv_schedule_schedule_week_filter($form, &$form_state) {
   );
   $form_state['storage']['client'] = $client;
 
-  $feeds = array();
-  try {
-    $feeds = $client->getFeeds();
-  }
-  catch (PbsTvScheduleClientException $e) {
-    watchdog_exception('pbs_tv_schedule', $e);
-  }
-
-  $form['channel'] = _pbs_tv_schedule_channel_filter($feeds);
+  $form['channel'] = _pbs_tv_schedule_channel_filter();
 
   $form['actions']['submit'] = array(
     '#type' => 'submit',
